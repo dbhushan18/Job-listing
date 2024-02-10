@@ -1,6 +1,10 @@
 const express = require("express")
 const app = express();
 const mongoose = require("mongoose")
+const authRoute =require("./route/auth")
+const jobRoute = require("./route/jobs")
+const cors = require("cors")
+
 require("dotenv").config();
 
 mongoose.connect(process.env.MONGODB_URI).then(()=>{
@@ -10,6 +14,7 @@ mongoose.connect(process.env.MONGODB_URI).then(()=>{
 })
 
 app.use(express.json());
+app.use(cors())
 
 app.get('/',(req, res)=>{
     res.json({message : "this is home route"})
@@ -23,10 +28,10 @@ app.get('/health', (req, res) => {
 })
 })
 
-const user =require("./route/auth")
-app.use("/register", user);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/job", jobRoute);
 
-port = process.env.PORT || 8000;
+const port = process.env.PORT || 6000;
 
 app.listen(port, () => {
     console.log(`🔥🔥 app is connected to the port ${port}🔥🔥`)
